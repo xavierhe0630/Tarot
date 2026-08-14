@@ -1,0 +1,435 @@
+/* ============================================================
+   塔罗测算工具 · 视觉系统
+   色板：夜幕紫 / 暗金 / 尘玫瑰 / 月光白
+   ============================================================ */
+:root{
+  --bg:            #15111f;
+  --bg-soft:       #1c1730;
+  --surface:       #241d3d;
+  --surface-2:     #2c2450;
+  --line:          #3a2f5c;
+  --gold:          #c9a24b;
+  --gold-soft:     #e3c878;
+  --rose:          #b5788f;
+  --ink:           #ece6f7;
+  --ink-dim:       #a99cc4;
+  --ink-faint:     #6f6390;
+  --danger:        #d3697a;
+  --radius:        14px;
+  --radius-sm:     8px;
+  --shadow:        0 10px 30px rgba(0,0,0,.45);
+  font-size: 16px;
+}
+
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+
+body{
+  background: radial-gradient(ellipse at 20% -10%, #2a2050 0%, transparent 55%),
+              radial-gradient(ellipse at 90% 0%, #3a1f3f 0%, transparent 45%),
+              var(--bg);
+  color: var(--ink);
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+h1,h2,h3,h4{
+  font-family: "Cormorant Garamond", "Noto Serif SC", serif;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--gold-soft);
+  margin: 0 0 .4em;
+}
+
+a{ color: var(--gold-soft); }
+
+/* ---------- 顶部星轨装饰 & 头部 ---------- */
+.site-header{
+  position: relative;
+  padding: 38px 24px 22px;
+  text-align: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.site-header::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: radial-gradient(1px 1px at 10% 30%, rgba(227,200,120,.5), transparent),
+                     radial-gradient(1px 1px at 80% 20%, rgba(227,200,120,.4), transparent),
+                     radial-gradient(1px 1px at 60% 70%, rgba(227,200,120,.3), transparent),
+                     radial-gradient(1.5px 1.5px at 30% 80%, rgba(227,200,120,.4), transparent),
+                     radial-gradient(1px 1px at 92% 60%, rgba(227,200,120,.3), transparent);
+  pointer-events:none;
+}
+.site-title{
+  font-size: clamp(28px, 5vw, 44px);
+  margin-bottom: 4px;
+  position: relative;
+}
+.site-subtitle{
+  color: var(--ink-dim);
+  font-size: 14px;
+  letter-spacing: .12em;
+  position: relative;
+}
+
+/* ---------- 导航 ---------- */
+.tabs{
+  display:flex; justify-content:center; gap: 6px;
+  flex-wrap: wrap;
+  padding: 14px 12px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top:0; z-index: 50;
+}
+.tab-btn{
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-dim);
+  font-size: 14px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .2s ease;
+  font-family: inherit;
+  letter-spacing: .03em;
+}
+.tab-btn:hover{ color: var(--gold-soft); }
+.tab-btn.active{
+  background: var(--surface-2);
+  color: var(--gold-soft);
+  border-color: var(--gold);
+}
+
+main{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+.view{ display:none; animation: fadeIn .25s ease; }
+.view.active{ display:block; }
+@keyframes fadeIn{ from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
+
+.section-intro{
+  color: var(--ink-dim);
+  max-width: 720px;
+  margin-bottom: 26px;
+  font-size: 14.5px;
+}
+
+/* ---------- 通用卡片容器 ---------- */
+.panel{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-family: inherit;
+  transition: all .15s ease;
+}
+.btn:hover{ border-color: var(--gold); color: var(--gold-soft); }
+.btn-primary{
+  background: linear-gradient(135deg, var(--gold) 0%, #a9803a 100%);
+  color: #211703;
+  border: none;
+  font-weight: 600;
+}
+.btn-primary:hover{ filter: brightness(1.08); color:#211703; }
+.btn-danger{ border-color: var(--danger); color: var(--danger); }
+.btn-danger:hover{ background: rgba(211,105,122,.12); color: var(--danger); }
+.btn-sm{ padding: 5px 11px; font-size: 12px; }
+
+/* ---------- 卡牌大全 ---------- */
+.deck-filters{
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px;
+}
+.chip{
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink-dim);
+  font-size: 13px;
+  cursor: pointer;
+}
+.chip.active{ background: var(--surface-2); color: var(--gold-soft); border-color: var(--gold);}
+.search-box{
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  padding: 7px 16px;
+  font-size: 13px;
+  min-width: 200px;
+  font-family: inherit;
+}
+.search-box:focus{ outline: none; border-color: var(--gold); }
+
+.card-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+  gap: 14px;
+}
+.card-tile{
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease;
+  text-align: center;
+}
+.card-tile:hover{ transform: translateY(-3px); border-color: var(--gold); }
+.card-tile .thumb{
+  width:100%; aspect-ratio: 5/8;
+  border-radius: 6px;
+  background: linear-gradient(160deg, var(--surface-2), var(--bg-soft));
+  border: 1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom: 8px;
+  font-size: 26px;
+  color: var(--gold-soft);
+  overflow:hidden;
+}
+.card-tile .thumb img{ width:100%; height:100%; object-fit:cover; }
+.card-tile .name{ font-size: 13px; color: var(--ink); }
+.card-tile .element-tag{ font-size: 11px; color: var(--ink-faint); margin-top:2px;}
+
+/* ---------- 卡牌详情弹层 ---------- */
+.modal-overlay{
+  position: fixed; inset:0; background: rgba(10,7,18,.72);
+  display:none; align-items:center; justify-content:center;
+  z-index: 200; padding: 20px;
+}
+.modal-overlay.active{ display:flex; }
+.modal-box{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  max-width: 620px; width:100%;
+  max-height: 88vh; overflow-y:auto;
+  padding: 26px;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+.modal-close{
+  position:absolute; top:14px; right:16px;
+  background:none; border:none; color: var(--ink-dim);
+  font-size: 20px; cursor:pointer;
+}
+.modal-close:hover{ color: var(--gold-soft); }
+
+.card-detail-head{ display:flex; gap:18px; align-items:flex-start; margin-bottom: 14px;}
+.card-detail-thumb{
+  width: 110px; aspect-ratio:5/8; flex-shrink:0;
+  border-radius: 8px; border:1px solid var(--line);
+  background: linear-gradient(160deg, var(--surface-2), var(--bg-soft));
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; font-size: 34px; color: var(--gold-soft);
+  cursor:pointer;
+}
+.card-detail-thumb img{ width:100%; height:100%; object-fit:cover; }
+.upload-hint{ font-size: 11px; color: var(--ink-faint); margin-top:6px; }
+
+.meta-row{ display:flex; gap: 18px; flex-wrap:wrap; margin: 10px 0 16px; font-size: 13px;}
+.meta-row .meta-item span{ color: var(--ink-faint); display:block; font-size:11px; margin-bottom:2px;}
+.meaning-block{ margin-bottom: 14px; }
+.meaning-block h4{ font-size: 14px; margin-bottom:6px; color: var(--gold-soft);}
+.meaning-block.upright h4::before{ content:"☀ "; }
+.meaning-block.reversed h4::before{ content:"☾ "; }
+.meaning-text{ font-size: 14px; color: var(--ink); }
+
+textarea.notes-area{
+  width:100%; min-height:100px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  resize: vertical;
+}
+textarea.notes-area:focus{ outline:none; border-color: var(--gold); }
+.notes-save-state{ font-size: 11px; color: var(--ink-faint); margin-top:4px; height:14px;}
+
+/* ---------- 牌阵库 ---------- */
+.spread-grid{
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+  gap: 18px;
+}
+.spread-card{
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.spread-card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+.spread-cat-tag{
+  font-size: 11px; padding: 3px 10px; border-radius:999px;
+  background: var(--surface-2); color: var(--rose); white-space:nowrap;
+}
+.spread-desc{ font-size: 13px; color: var(--ink-dim); margin: 8px 0 14px; }
+.spread-mini-canvas{
+  position:relative; width:100%; aspect-ratio: 4/3;
+  background: radial-gradient(circle at 50% 50%, rgba(201,162,75,.06), transparent 70%), var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  overflow:hidden;
+}
+.pos-dot{
+  position:absolute; width: 22px; height: 22px;
+  transform: translate(-50%,-50%);
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--gold);
+  color: var(--gold-soft);
+  font-size: 10px;
+  display:flex; align-items:center; justify-content:center;
+}
+.pos-dot.filled{ background: var(--gold); color:#221703; font-weight:600; }
+.spread-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ---------- 起阵 / 占卜 ---------- */
+.draw-setup{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:22px;}
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field label{ font-size: 12px; color: var(--ink-faint); }
+select, input[type=text], input[type=date]{
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13.5px;
+}
+select:focus, input:focus{ outline:none; border-color: var(--gold); }
+
+.draw-canvas-wrap{
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 22px;
+}
+.draw-canvas{
+  position: relative; width: 100%;
+  aspect-ratio: 4/3;
+  background-size: cover; background-position:center;
+  border-radius: var(--radius-sm);
+}
+.draw-slot{
+  position:absolute; width: 72px;
+  transform: translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  cursor:pointer;
+}
+.draw-slot .slot-card{
+  width: 60px; aspect-ratio:5/8;
+  border-radius: 6px;
+  background: linear-gradient(160deg, var(--surface-2), var(--bg-soft));
+  border: 1.5px dashed var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 10px; color: var(--ink-faint);
+  text-align:center;
+}
+.draw-slot.filled .slot-card{
+  border: 1.5px solid var(--gold);
+  color: var(--gold-soft);
+  background: var(--surface-2);
+  font-size: 11px; padding: 3px; font-weight:600;
+}
+.draw-slot.reversed .slot-card{ transform: rotate(180deg); }
+.draw-slot .slot-label{
+  font-size: 10.5px; color: var(--ink-dim); text-align:center;
+  background: rgba(21,17,31,.7); padding:1px 6px; border-radius:4px;
+}
+
+.reading-result{ margin-top: 8px; }
+.result-item{
+  border-left: 2px solid var(--gold);
+  padding: 4px 0 4px 14px;
+  margin-bottom: 14px;
+}
+.result-item h4{ font-size: 14px; margin-bottom: 4px; }
+.result-item .card-name{ color: var(--rose); }
+.result-item .orientation{ color: var(--ink-faint); font-size:12px; }
+
+/* ---------- 历史记录 ---------- */
+.history-list{ display:flex; flex-direction:column; gap:12px; }
+.history-item{
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  cursor:pointer;
+}
+.history-item:hover{ border-color: var(--gold); }
+.history-top{ display:flex; justify-content:space-between; gap:10px; font-size:13px;}
+.history-top .h-name{ color: var(--gold-soft); }
+.history-top .h-date{ color: var(--ink-faint); }
+.history-q{ font-size: 12.5px; color: var(--ink-dim); margin-top:4px; }
+
+/* ---------- 牌阵编辑器 ---------- */
+.editor-canvas{
+  position: relative;
+  width:100%; aspect-ratio: 4/3;
+  background: var(--bg-soft);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background-size:cover; background-position:center;
+  margin-bottom: 12px;
+}
+.editor-pos{
+  position:absolute; width:34px; height:34px;
+  transform: translate(-50%,-50%);
+  background: var(--surface-2);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  color: var(--gold-soft);
+  font-size: 11px;
+  display:flex; align-items:center; justify-content:center;
+  cursor: grab;
+  user-select:none;
+}
+.editor-pos.dragging{ cursor:grabbing; opacity:.85; }
+.editor-pos-list{ display:flex; flex-direction:column; gap:8px; margin-top: 10px;}
+.editor-pos-row{ display:flex; gap:8px; align-items:center; }
+.editor-pos-row input[type=text]{ flex:1; }
+
+.form-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:14px;}
+@media (max-width: 640px){ .form-grid{ grid-template-columns: 1fr; } }
+
+.empty-state{
+  text-align:center; color: var(--ink-faint);
+  padding: 50px 20px; font-size: 13.5px;
+}
+
+footer.site-footer{
+  text-align:center; padding: 28px 20px 40px;
+  color: var(--ink-faint); font-size: 12px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-thumb{ background: var(--surface-2); border-radius:6px; }
+::-webkit-scrollbar-track{ background: transparent; }
+
+@media (max-width: 560px){
+  .card-detail-head{ flex-direction: column; align-items:center; text-align:center;}
+}

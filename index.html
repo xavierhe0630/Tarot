@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塔罗小屋 · 我的塔罗测算工具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Serif+SC:wght@600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">🔮 塔罗小屋</div>
+  <div class="site-subtitle">手摸实牌 · 网站解读 · 记录成长</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-view="home">首页</button>
+  <button class="tab-btn" data-view="deck">卡牌大全</button>
+  <button class="tab-btn" data-view="spreads">牌阵库</button>
+  <button class="tab-btn" data-view="draw">开始占卜</button>
+  <button class="tab-btn" data-view="history">历史记录</button>
+</nav>
+
+<main>
+
+  <!-- 首页 -->
+  <section id="view-home" class="view active">
+    <div class="panel" style="text-align:center; padding:40px 24px;">
+      <h2 style="font-size:26px;">欢迎回来</h2>
+      <p class="section-intro" style="margin:0 auto 20px;">
+        这是你专属的塔罗工具箱：你在现实中洗牌、摸牌，网站帮你记录牌意、管理牌阵、沉淀备注。
+        所有数据只保存在你自己的浏览器里，不会上传到任何服务器。
+      </p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="showView('draw')">开始一次占卜</button>
+        <button class="btn" onclick="showView('deck')">查阅卡牌大全</button>
+        <button class="btn" onclick="showView('spreads')">管理我的牌阵</button>
+      </div>
+    </div>
+
+    <div class="spread-grid" style="margin-top:24px;">
+      <div class="panel">
+        <h3>① 摸牌前</h3>
+        <p class="section-intro" style="margin-bottom:0;">在「牌阵库」里选一个牌阵（感情 / 事业 / 金钱或自定义），看清每个位置代表的含义，实际洗牌摸牌。</p>
+      </div>
+      <div class="panel">
+        <h3>② 摸牌中</h3>
+        <p class="section-intro" style="margin-bottom:0;">在「开始占卜」里起阵，点击每个牌位记录你摸到的牌与正逆位。</p>
+      </div>
+      <div class="panel">
+        <h3>③ 摸牌后</h3>
+        <p class="section-intro" style="margin-bottom:0;">一键生成结合牌意与你个人备注的解读，保存进「历史记录」慢慢回顾。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 卡牌大全 -->
+  <section id="view-deck" class="view">
+    <p class="section-intro">78 张牌的元素属性与基本含义，点击任意一张可查看正逆位解释、上传专属图片、编写你自己的备注。</p>
+    <div class="deck-filters" id="deck-filter-chips">
+      <span class="chip active" data-filter="all">全部</span>
+      <span class="chip" data-filter="major">大阿尔卡纳</span>
+      <span class="chip" data-filter="wands">权杖（火）</span>
+      <span class="chip" data-filter="cups">圣杯（水）</span>
+      <span class="chip" data-filter="swords">宝剑（风）</span>
+      <span class="chip" data-filter="pentacles">星币（土）</span>
+      <input type="text" id="deck-search" class="search-box" placeholder="搜索牌名…">
+    </div>
+    <div class="card-grid" id="deck-grid"></div>
+  </section>
+
+  <!-- 牌阵库 -->
+  <section id="view-spreads" class="view">
+    <p class="section-intro">预设了感情 / 事业 / 金钱三个常用牌阵，你也可以新建、编辑、上传自己的牌阵示意图。</p>
+    <div style="margin-bottom:16px;">
+      <button class="btn btn-primary" onclick="openSpreadEditor(null)">＋ 新建牌阵</button>
+    </div>
+    <div class="spread-grid" id="spreads-grid"></div>
+  </section>
+
+  <!-- 开始占卜 -->
+  <section id="view-draw" class="view">
+    <p class="section-intro">选择牌阵、写下你想问的问题，然后照着牌位实际摸牌，逐一记录下来。</p>
+    <div class="panel">
+      <div class="draw-setup">
+        <div class="field">
+          <label>选择牌阵</label>
+          <select id="draw-spread-select"></select>
+        </div>
+        <div class="field" style="flex:1; min-width:220px;">
+          <label>本次想问的问题（可选）</label>
+          <input type="text" id="draw-question" placeholder="例如：这段感情接下来会如何发展？">
+        </div>
+        <button class="btn btn-primary" onclick="beginDraw()">起阵</button>
+      </div>
+    </div>
+    <div id="draw-canvas-area" style="margin-top:20px;"></div>
+    <div id="draw-result-area"></div>
+  </section>
+
+  <!-- 历史记录 -->
+  <section id="view-history" class="view">
+    <p class="section-intro">你保存过的所有占卜记录，点击可查看完整解读。</p>
+    <div class="history-list" id="history-list"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div style="margin-bottom:8px;">
+    <button class="btn btn-sm" onclick="exportData()">导出我的数据备份</button>
+    <button class="btn btn-sm" onclick="document.getElementById('import-file-input').click()">导入数据备份</button>
+    <input type="file" id="import-file-input" accept="application/json" style="display:none" onchange="importData(event)">
+  </div>
+  塔罗小屋 · 所有数据保存在本地浏览器中 · 仅供个人娱乐与自我探索参考
+</footer>
+
+<!-- 卡牌详情 / 历史详情 弹层 -->
+<div class="modal-overlay" id="card-modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCardModal()">✕</button>
+    <div id="card-modal-body"></div>
+  </div>
+</div>
+
+<!-- 摸牌取牌 弹层 -->
+<div class="modal-overlay" id="card-picker-overlay">
+  <div class="modal-box" style="max-width:420px;">
+    <button class="modal-close" onclick="closeCardPicker()">✕</button>
+    <h3>记录这张牌</h3>
+    <div class="field" style="margin-bottom:12px;">
+      <label>你摸到的牌</label>
+      <select id="picker-card-select" style="width:100%;"></select>
+    </div>
+    <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; margin-bottom:16px;">
+      <input type="checkbox" id="picker-reversed"> 逆位
+    </label>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-primary" onclick="confirmCardPicker()">确定</button>
+      <button class="btn btn-danger" onclick="clearCurrentSlot()">清空此牌位</button>
+    </div>
+  </div>
+</div>
+
+<!-- 牌阵编辑器 弹层 -->
+<div class="modal-overlay" id="spread-editor-overlay">
+  <div class="modal-box" style="max-width:700px;">
+    <button class="modal-close" onclick="closeSpreadEditor()">✕</button>
+    <h3>编辑牌阵</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>牌阵名称</label>
+        <input type="text" id="editor-name" placeholder="例如：海伦牌阵">
+      </div>
+      <div class="field">
+        <label>分类</label>
+        <input type="text" id="editor-category" placeholder="例如：感情 / 事业 / 金钱 / 自定义">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label>说明</label>
+      <input type="text" id="editor-description" placeholder="这个牌阵适合用来分析什么问题？">
+    </div>
+    <div class="field" style="margin-bottom:8px;">
+      <label>牌位布局 — 点击画布空白处添加牌位，可拖拽调整位置</label>
+    </div>
+    <div class="editor-canvas" id="editor-canvas" onclick="editorCanvasClick(event)"></div>
+    <div style="margin-bottom:10px;">
+      <button class="btn btn-sm" onclick="document.getElementById('spread-bg-input').click()">上传背景/注解图片（可选）</button>
+      <input type="file" id="spread-bg-input" accept="image/*" style="display:none" onchange="editorUploadBg(event)">
+    </div>
+    <div class="editor-pos-list" id="editor-pos-list"></div>
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="saveSpreadEditor()">保存牌阵</button>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
