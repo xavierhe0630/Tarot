@@ -153,37 +153,47 @@ const CARDS = buildDeck();
    position: {x, y}  百分比坐标（相对于牌阵画布 0-100）
    label: 位置含义
    ============================================================ */
+/* ============================================================
+   默认牌阵
+   position: {x, y}  百分比坐标（相对于牌阵画布 0-100）
+   label: 位置含义
+   aspect: 画布宽高比（如 "3/4" 表示偏竖直，"16/9" 表示偏宽），
+           用于让每个牌阵的画布形状贴合实际牌位分布，减少空白、更紧凑
+   ============================================================ */
 const DEFAULT_SPREADS = [
   {
     id: "spread-love-helen",
     name: "海伦牌阵",
     category: "感情",
+    aspect: "3/4",
     description: "适用于分析感情关系的现状、双方状态与走向，共 7 张牌。",
     positions: [
       {x:20, y:70, label:"你的状态"},
       {x:80, y:70, label:"对方的状态"},
-      {x:50, y:75, label:"关系现状"},
-      {x:35, y:45, label:"过去的影响"},
-      {x:65, y:45, label:"内心真实想法"},
-      {x:50, y:20, label:"面临的挑战"},
-      {x:50, y:5,  label:"未来走向"}
+      {x:50, y:78, label:"关系现状"},
+      {x:32, y:44, label:"过去的影响"},
+      {x:68, y:44, label:"内心真实想法"},
+      {x:50, y:18, label:"面临的挑战"},
+      {x:50, y:4,  label:"未来走向"}
     ]
   },
   {
     id: "spread-career-triangle",
     name: "圣三角牌阵",
-    category: "事业",
-    description: "三张牌的简明结构，用于快速判断事业相关问题的过去、现在与未来（或现状/障碍/建议）。",
+    category: "综合",
+    aspect: "4/3",
+    description: "适合判断情势与寻找成因，梳理问题前因后果，共 3 张牌。",
     positions: [
-      {x:15, y:80, label:"现状"},
-      {x:85, y:80, label:"障碍 / 阻力"},
-      {x:50, y:15, label:"建议 / 走向"}
+      {x:50, y:82, label:"过去的原因"},
+      {x:28, y:24, label:"问题的现状"},
+      {x:72, y:24, label:"将来的结果"}
     ]
   },
   {
     id: "spread-money-celtic",
     name: "凯尔特十字阵",
     category: "金钱",
+    aspect: "4/3",
     description: "经典十字与权杖结构，共 10 张牌，用于深入分析金钱、财务或复杂事务的全貌。",
     positions: [
       {x:38, y:50, label:"1. 现状核心"},
@@ -196,6 +206,165 @@ const DEFAULT_SPREADS = [
       {x:82, y:66, label:"8. 外部环境影响"},
       {x:82, y:44, label:"9. 希望或恐惧"},
       {x:82, y:22, label:"10. 最终结果"}
+    ]
+  },
+  {
+    id: "spread-hexagram",
+    name: "六芒星牌阵",
+    category: "事业",
+    aspect: "4/3",
+    description: "用于占卜事物发展与预测未来，能预判发展方向、理清事情本源，共 7 张牌。",
+    positions: [
+      {x:50, y:12, label:"问题过去状况"},
+      {x:22, y:30, label:"周遭的环境状况"},
+      {x:78, y:30, label:"本人的心理态度"},
+      {x:50, y:48, label:"事物的最终结果"},
+      {x:22, y:68, label:"问题未来状况"},
+      {x:78, y:68, label:"问题现在状况"},
+      {x:50, y:86, label:"解决问题的对应策略"}
+    ]
+  },
+  {
+    id: "spread-weekly",
+    name: "周运势牌阵",
+    category: "综合",
+    aspect: "16/9",
+    description: "针对一周七天进行分析，综观周运势，逐天预判，共 7 张牌。",
+    positions: [
+      {x:12, y:30, label:"周运势第一天"},
+      {x:32, y:30, label:"周运势第二天"},
+      {x:52, y:30, label:"周运势第三天"},
+      {x:72, y:30, label:"周运势第四天"},
+      {x:32, y:72, label:"周运势第五天"},
+      {x:52, y:72, label:"周运势第六天"},
+      {x:72, y:72, label:"周运势第七天"}
+    ]
+  },
+  {
+    id: "spread-lovers-tree",
+    name: "恋人之树牌阵",
+    category: "感情",
+    aspect: "4/3",
+    description: "详细分析对方的心理和态度，找到两人之间的症结利弊，共 7 张牌。",
+    positions: [
+      {x:15, y:20, label:"自己对对方的想法与态度"},
+      {x:38, y:20, label:"自己对彼此关系的期望"},
+      {x:62, y:20, label:"对方对彼此关系的期望"},
+      {x:85, y:20, label:"对方对自己的想法与态度"},
+      {x:35, y:52, label:"自己的外在行动"},
+      {x:65, y:52, label:"对方的外在行动"},
+      {x:50, y:84, label:"两人最后的结果"}
+    ]
+  },
+  {
+    id: "spread-marriage",
+    name: "婚姻牌阵",
+    category: "感情",
+    aspect: "3/4",
+    description: "针对婚姻状况和期望进行解析，把握婚姻走势，共 7 张牌。",
+    positions: [
+      {x:50, y:8,  label:"未来的发展"},
+      {x:24, y:30, label:"对婚姻的期望"},
+      {x:76, y:30, label:"对婚姻的恐惧"},
+      {x:50, y:42, label:"遇到的问题"},
+      {x:24, y:66, label:"过去的状况"},
+      {x:76, y:66, label:"现在的状况"},
+      {x:50, y:88, label:"代表你自己"}
+    ]
+  },
+  {
+    id: "spread-problem-solving",
+    name: "问题解决牌阵",
+    category: "综合",
+    aspect: "3/4",
+    description: "对问题的剖析，对比前因后果，根据逻辑关系提高处理问题的能力，共 5 张牌。",
+    positions: [
+      {x:30, y:20, label:"将会遇到的阻碍"},
+      {x:66, y:14, label:"问题的解决方式"},
+      {x:66, y:44, label:"周遭的环境情况"},
+      {x:30, y:60, label:"问题现在的状况"},
+      {x:66, y:82, label:"问题发生的原因"}
+    ]
+  },
+  {
+    id: "spread-gypsy",
+    name: "吉普赛牌阵",
+    category: "感情",
+    aspect: "3/4",
+    description: "恋爱中人专用牌阵，对双方各自剖析，对比相处方式与环境适应能力，共 5 张牌。",
+    positions: [
+      {x:50, y:10, label:"对方目前的想法"},
+      {x:20, y:48, label:"与对方相处应采取的方式"},
+      {x:50, y:48, label:"目前的周遭状况"},
+      {x:80, y:48, label:"关系最后的结果"},
+      {x:50, y:86, label:"自己目前的状况"}
+    ]
+  },
+  {
+    id: "spread-soulmate",
+    name: "有缘人牌阵",
+    category: "感情",
+    aspect: "4/3",
+    description: "用于未来爱人的占卜，适宜寻找什么样的另一半，共 5 张牌。",
+    positions: [
+      {x:25, y:20, label:"代表你希望追求的对象"},
+      {x:75, y:20, label:"代表你不喜欢的对象"},
+      {x:50, y:50, label:"代表你现在的心情、处境"},
+      {x:25, y:80, label:"代表该采取的行动"},
+      {x:75, y:80, label:"代表未来发展、最后结果"}
+    ]
+  },
+  {
+    id: "spread-timeline",
+    name: "时间流牌阵",
+    category: "综合",
+    aspect: "16/9",
+    description: "平行流向的时间解析法，适合预测未来、窥探未知，共 3 张牌。",
+    positions: [
+      {x:18, y:50, label:"过去"},
+      {x:50, y:50, label:"现在"},
+      {x:82, y:50, label:"未来"}
+    ]
+  },
+  {
+    id: "spread-wealth-tree",
+    name: "财富之树牌阵",
+    category: "金钱",
+    aspect: "3/4",
+    description: "解析财富运势生长的牌阵，用来占卜事业和财运，共 5 张牌。",
+    positions: [
+      {x:50, y:10, label:"最终的高度"},
+      {x:24, y:42, label:"潜在的危险"},
+      {x:50, y:42, label:"依赖的能量"},
+      {x:76, y:42, label:"遇到的阻碍"},
+      {x:50, y:82, label:"生长的根基"}
+    ]
+  },
+  {
+    id: "spread-either-or",
+    name: "二选一牌阵",
+    category: "综合",
+    aspect: "4/3",
+    description: "适用于二选一的抉择判断，在判断情势、决定方向时应用广泛，共 5 张牌。",
+    positions: [
+      {x:26, y:16, label:"选择A的最终结果"},
+      {x:74, y:16, label:"选择B的最终结果"},
+      {x:36, y:46, label:"选择A的发展"},
+      {x:64, y:46, label:"选择B的发展"},
+      {x:50, y:82, label:"问题的现况"}
+    ]
+  },
+  {
+    id: "spread-body-mind-spirit",
+    name: "身心灵牌阵",
+    category: "综合",
+    aspect: "4/3",
+    description: "从灵性、心理、身体三方面透彻审视自我，适合自我探索，共 4 张牌。",
+    positions: [
+      {x:50, y:16, label:"可学习提升的元素"},
+      {x:22, y:60, label:"身体的状况"},
+      {x:50, y:60, label:"心理的状况"},
+      {x:78, y:60, label:"灵魂的状况"}
     ]
   }
 ];
