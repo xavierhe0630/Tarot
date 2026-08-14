@@ -168,13 +168,13 @@ const DEFAULT_SPREADS = [
     aspect: "3/4",
     description: "适用于分析感情关系的现状、双方状态与走向，共 7 张牌。",
     positions: [
-      {x:20, y:74, label:"你的状态"},
-      {x:80, y:74, label:"对方的状态"},
-      {x:50, y:92, label:"关系现状"},
-      {x:32, y:50, label:"过去的影响"},
-      {x:68, y:50, label:"内心真实想法"},
-      {x:50, y:26, label:"面临的挑战"},
-      {x:50, y:4,  label:"未来走向"}
+      {x:20, y:80, label:"你的状态"},
+      {x:80, y:80, label:"对方的状态"},
+      {x:50, y:94, label:"关系现状"},
+      {x:32, y:46, label:"过去的影响"},
+      {x:68, y:46, label:"内心真实想法"},
+      {x:50, y:30, label:"面临的挑战"},
+      {x:50, y:2,  label:"未来走向"}
     ]
   },
   {
@@ -193,19 +193,19 @@ const DEFAULT_SPREADS = [
     id: "spread-money-celtic",
     name: "凯尔特十字阵",
     category: "金钱",
-    aspect: "4/3",
+    aspect: "1/1",
     description: "经典十字与权杖结构，共 10 张牌，用于深入分析金钱、财务或复杂事务的全貌。",
     positions: [
-      {x:38, y:50, label:"1. 现状核心"},
-      {x:38, y:50, label:"2. 直接挑战", rotate:90},
-      {x:38, y:75, label:"3. 潜意识 / 根基"},
-      {x:38, y:25, label:"4. 近期过去"},
-      {x:20, y:50, label:"5. 可能的结果"},
-      {x:56, y:50, label:"6. 即将到来"},
-      {x:82, y:88, label:"7. 你自身的态度"},
-      {x:82, y:66, label:"8. 外部环境影响"},
-      {x:82, y:44, label:"9. 希望或恐惧"},
-      {x:82, y:22, label:"10. 最终结果"}
+      {x:36, y:50, label:"1. 现状核心"},
+      {x:36, y:50, label:"2. 直接挑战", rotate:90},
+      {x:36, y:88, label:"3. 潜意识 / 根基"},
+      {x:36, y:10, label:"4. 近期过去"},
+      {x:14, y:50, label:"5. 可能的结果"},
+      {x:58, y:50, label:"6. 即将到来"},
+      {x:86, y:92, label:"7. 你自身的态度"},
+      {x:86, y:63, label:"8. 外部环境影响"},
+      {x:86, y:34, label:"9. 希望或恐惧"},
+      {x:86, y:5,  label:"10. 最终结果"}
     ]
   },
   {
@@ -347,11 +347,11 @@ const DEFAULT_SPREADS = [
     aspect: "4/3",
     description: "适用于二选一的抉择判断，在判断情势、决定方向时应用广泛，共 5 张牌。",
     positions: [
-      {x:26, y:16, label:"选择A的最终结果"},
-      {x:74, y:16, label:"选择B的最终结果"},
-      {x:36, y:46, label:"选择A的发展"},
-      {x:64, y:46, label:"选择B的发展"},
-      {x:50, y:82, label:"问题的现况"}
+      {x:26, y:10, label:"选择A的最终结果"},
+      {x:74, y:10, label:"选择B的最终结果"},
+      {x:36, y:48, label:"选择A的发展"},
+      {x:64, y:48, label:"选择B的发展"},
+      {x:50, y:86, label:"问题的现况"}
     ]
   },
   {
