@@ -127,13 +127,13 @@
 
 <!-- 摸牌取牌 弹层 -->
 <div class="modal-overlay" id="card-picker-overlay">
-  <div class="modal-box" style="max-width:420px;">
+  <div class="modal-box" style="max-width:560px;">
     <button class="modal-close" onclick="closeCardPicker()">✕</button>
     <h3>记录这张牌</h3>
-    <div class="field" style="margin-bottom:12px;">
-      <label>你摸到的牌</label>
-      <select id="picker-card-select" style="width:100%;"></select>
-    </div>
+    <div class="picker-current" id="picker-current" style="display:none;"></div>
+    <input type="text" id="picker-search-input" class="search-box picker-search" style="width:100%;"
+           placeholder="搜索牌名…" oninput="pickerSearchInput(this.value)">
+    <div class="picker-grid" id="picker-grid"></div>
     <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; margin-bottom:16px;">
       <input type="checkbox" id="picker-reversed"> 逆位
     </label>
@@ -159,9 +159,20 @@
         <input type="text" id="editor-category" placeholder="例如：感情 / 事业 / 金钱 / 自定义">
       </div>
     </div>
-    <div class="field" style="margin-bottom:14px;">
-      <label>说明</label>
-      <input type="text" id="editor-description" placeholder="这个牌阵适合用来分析什么问题？">
+    <div class="form-grid">
+      <div class="field" style="grid-column: 1 / -1;">
+        <label>说明</label>
+        <input type="text" id="editor-description" placeholder="这个牌阵适合用来分析什么问题？">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:14px; max-width:220px;">
+      <label>画布比例（按牌位实际形状选，减少空白）</label>
+      <select id="editor-aspect" onchange="updateEditorAspect(this.value)">
+        <option value="4/3">4 : 3（横向 · 默认）</option>
+        <option value="3/4">3 : 4（竖向 · 紧凑）</option>
+        <option value="16/9">16 : 9（宽扁 · 单行）</option>
+        <option value="1/1">1 : 1（正方）</option>
+      </select>
     </div>
     <div class="field" style="margin-bottom:8px;">
       <label>牌位布局 — 点击画布空白处添加牌位，可拖拽调整位置</label>
