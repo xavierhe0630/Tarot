@@ -412,6 +412,7 @@ select:focus, input:focus{ outline:none; border-color: var(--gold); }
   line-height:1.15;
   z-index: 2;
 }
+.draw-slot .slot-card .slot-card-name .reversed-tag{ color: var(--rose); }
 .draw-slot .slot-label{
   font-size: 10.5px; color: var(--ink-dim); text-align:center;
   background: rgba(21,17,31,.7); padding:1px 6px; border-radius:4px;
