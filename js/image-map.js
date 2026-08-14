@@ -1,34 +1,31 @@
 /* ============================================================
    图片映射表
    把每张牌对应到 images/ 文件夹里的实际文件名
-   （文件名规则来自用户提供的 rider-waite-tarot 文件夹截图）
-   如果某个文件名猜测有误，图片会自动加载失败并退回显示图标符号，
-   不会导致页面出错 —— 发现哪张不对，改这个文件里对应的一行即可。
    ============================================================ */
 
 // 大阿尔卡纳：卡牌编号 -> 文件名关键词（对应 images/major_arcana_关键词.png）
 const MAJOR_IMAGE_KEY = {
   "00": "fool",
   "01": "magician",
-  "02": "high_priestess",   // 猜测，如不对改成 priestess 等
+  "02": "priestess",
   "03": "empress",
   "04": "emperor",
   "05": "hierophant",
   "06": "lovers",
-  "07": "chariot",          // 猜测
+  "07": "chariot",
   "08": "strength",
   "09": "hermit",
-  "10": "fortune",          // 命运之轮，已确认
+  "10": "fortune",
   "11": "justice",
-  "12": "hanged_man",       // 猜测
+  "12": "hanged",
   "13": "death",
-  "14": "temperance",       // 猜测
-  "15": "devil",            // 猜测
-  "16": "tower",            // 猜测
-  "17": "star",             // 猜测
+  "14": "temperance",
+  "15": "devil",
+  "16": "tower",
+  "17": "star",
   "18": "moon",
-  "19": "sun",              // 猜测
-  "20": "judgement",        // 猜测，如不对改成 judgment
+  "19": "sun",
+  "20": "judgement",
   "21": "world"
 };
 
