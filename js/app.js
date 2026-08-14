@@ -150,6 +150,9 @@ function renderSpreadsLibrary(){
   grid.innerHTML = spreads.map(s=>{
     const isCustom = !!DEFAULT_SPREADS.find(d=>d.id===s.id) ? false : true;
     const bg = Store.getSpreadImage(s.id);
+    const aspect = s.aspect || "4/3";
+    const [aw, ah] = aspect.split("/").map(Number);
+    const portraitClass = ah > aw ? " canvas-portrait" : "";
     return `
     <div class="spread-card">
       <div class="spread-card-top">
@@ -157,7 +160,7 @@ function renderSpreadsLibrary(){
         <span class="spread-cat-tag">${s.category}</span>
       </div>
       <div class="spread-desc">${s.description||""} · 共 ${s.positions.length} 张牌</div>
-      <div class="spread-mini-canvas" style="${bg?`background-image:url(${bg}); background-size:cover; background-position:center;`:""}">
+      <div class="spread-mini-canvas${portraitClass}" style="aspect-ratio:${aspect}; ${bg?`background-image:url(${bg}); background-size:cover; background-position:center;`:""}">
         ${s.positions.map((p,i)=>`<div class="pos-dot" style="left:${p.x}%; top:${p.y}%;">${i+1}</div>`).join("")}
       </div>
       <div class="spread-actions">
@@ -191,6 +194,7 @@ function openSpreadEditor(sourceId){
     name: isDefault ? (source.name+"（副本）") : source.name,
     category: source.category,
     description: source.description||"",
+    aspect: source.aspect || "4/3",
     positions: JSON.parse(JSON.stringify(source.positions)),
     _bg: Store.getSpreadImage(source.id) || null
   } : {
@@ -198,6 +202,7 @@ function openSpreadEditor(sourceId){
     name: "",
     category: "自定义",
     description: "",
+    aspect: "4/3",
     positions: [],
     _bg: null
   };
@@ -213,8 +218,12 @@ function renderSpreadEditor(){
   document.getElementById("editor-name").value = s.name;
   document.getElementById("editor-category").value = s.category;
   document.getElementById("editor-description").value = s.description;
+  document.getElementById("editor-aspect").value = s.aspect || "4/3";
   const canvas = document.getElementById("editor-canvas");
+  canvas.style.aspectRatio = s.aspect || "4/3";
   canvas.style.backgroundImage = s._bg ? `url(${s._bg})` : "";
+  const [aw, ah] = (s.aspect||"4/3").split("/").map(Number);
+  canvas.classList.toggle("canvas-portrait", ah > aw);
   canvas.innerHTML = s.positions.map((p,i)=>`
     <div class="editor-pos" style="left:${p.x}%; top:${p.y}%;" data-idx="${i}">${i+1}</div>
   `).join("");
@@ -229,6 +238,10 @@ function renderSpreadEditor(){
       <button class="btn btn-sm btn-danger" onclick="removeEditorPos(${i})">删除</button>
     </div>
   `).join("") || `<div class="empty-state" style="padding:14px;">点击上方画布来添加牌位</div>`;
+}
+function updateEditorAspect(val){
+  state.editingSpread.aspect = val;
+  renderSpreadEditor();
 }
 function attachEditorDrag(){
   const canvas = document.getElementById("editor-canvas");
@@ -294,7 +307,7 @@ function saveSpreadEditor(){
     alert("请至少添加一个牌位（点击画布空白处添加）。");
     return;
   }
-  const toSave = { id:s.id, name:s.name, category:s.category, description:s.description, positions:s.positions };
+  const toSave = { id:s.id, name:s.name, category:s.category, description:s.description, aspect:s.aspect||"4/3", positions:s.positions };
   Store.updateCustomSpread(toSave);
   Store.setSpreadImage(s.id, s._bg);
   closeSpreadEditor();
@@ -329,12 +342,15 @@ function renderDrawCanvas(){
   const draw = state.currentDraw;
   const spread = getSpreadById(draw.spreadId);
   const bg = Store.getSpreadImage(spread.id);
+  const aspect = spread.aspect || "4/3";
+  const [aw, ah] = aspect.split("/").map(Number);
+  const portraitClass = ah > aw ? " canvas-portrait" : "";
   const wrap = document.getElementById("draw-canvas-area");
   wrap.innerHTML = `
     <div class="draw-canvas-wrap">
       <h3 style="margin-bottom:4px;">${spread.name}</h3>
       <div class="section-intro" style="margin-bottom:14px;">${spread.description||""} 点击每个牌位来记录你摸到的牌与正逆位。</div>
-      <div class="draw-canvas" id="draw-canvas" style="${bg?`background-image:url(${bg})`:""}"></div>
+      <div class="draw-canvas${portraitClass}" id="draw-canvas" style="aspect-ratio:${aspect}; ${bg?`background-image:url(${bg})`:""}"></div>
       <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="computeReading()">解读牌阵</button>
         <button class="btn" onclick="clearDrawSlots()">清空重摸</button>
@@ -345,9 +361,12 @@ function renderDrawCanvas(){
   canvas.innerHTML = spread.positions.map((p,i)=>{
     const slot = draw.slots[i];
     const card = slot.cardId ? CARDS.find(c=>c.id===slot.cardId) : null;
+    const cardVisual = card
+      ? `${cardThumbContent(card)}<div class="slot-card-name">${card.name_cn}</div>`
+      : (i+1);
     return `
       <div class="draw-slot ${card?'filled':''} ${slot.reversed?'reversed':''}" style="left:${p.x}%; top:${p.y}%;" onclick="openCardPicker(${i})">
-        <div class="slot-card">${card ? card.name_cn : (i+1)}</div>
+        <div class="slot-card">${cardVisual}</div>
         <div class="slot-label">${p.label}</div>
       </div>
     `;
@@ -363,20 +382,59 @@ function clearDrawSlots(){
 
 function openCardPicker(slotIndex){
   state.pendingSlotIndex = slotIndex;
-  const sel = document.getElementById("picker-card-select");
-  sel.innerHTML = `<option value="">— 选择你摸到的牌 —</option>` + CARDS.map(c=>`<option value="${c.id}">${c.name_cn}（${c.element}）</option>`).join("");
   const current = state.currentDraw.slots[slotIndex];
-  sel.value = current.cardId || "";
+  state.pickerSelectedCardId = current.cardId || null;
+  state.pickerSearch = "";
   document.getElementById("picker-reversed").checked = current.reversed;
+  document.getElementById("picker-search-input").value = "";
+  renderPickerGrid();
   document.getElementById("card-picker-overlay").classList.add("active");
 }
 function closeCardPicker(){
   document.getElementById("card-picker-overlay").classList.remove("active");
 }
+function renderPickerGrid(){
+  const grid = document.getElementById("picker-grid");
+  const search = (state.pickerSearch||"").trim().toLowerCase();
+  const list = CARDS.filter(c=>{
+    if(!search) return true;
+    return c.name_cn.includes(search) || c.name_en.toLowerCase().includes(search);
+  });
+  grid.innerHTML = list.map(c=>`
+    <div class="picker-tile ${state.pickerSelectedCardId===c.id?'selected':''}" onclick="selectPickerCard('${c.id}')">
+      <div class="thumb">${cardThumbContent(c)}</div>
+      <div class="p-name">${c.name_cn}</div>
+    </div>
+  `).join("") || `<div class="empty-state">没有匹配的牌</div>`;
+
+  const currentBox = document.getElementById("picker-current");
+  if(state.pickerSelectedCardId){
+    const c = CARDS.find(x=>x.id===state.pickerSelectedCardId);
+    currentBox.style.display = "flex";
+    currentBox.innerHTML = `
+      <div class="thumb">${cardThumbContent(c)}</div>
+      <div>
+        <div style="font-size:13.5px; color:var(--gold-soft);">已选择：${c.name_cn}</div>
+        <div style="font-size:11.5px; color:var(--ink-faint);">${c.element}属性</div>
+      </div>
+    `;
+  } else {
+    currentBox.style.display = "none";
+    currentBox.innerHTML = "";
+  }
+}
+function selectPickerCard(cardId){
+  state.pickerSelectedCardId = cardId;
+  renderPickerGrid();
+}
+function pickerSearchInput(val){
+  state.pickerSearch = val;
+  renderPickerGrid();
+}
 function confirmCardPicker(){
-  const cardId = document.getElementById("picker-card-select").value;
+  const cardId = state.pickerSelectedCardId;
   const reversed = document.getElementById("picker-reversed").checked;
-  if(!cardId){ alert("请选择一张牌"); return; }
+  if(!cardId){ alert("请先点选一张牌"); return; }
   state.currentDraw.slots[state.pendingSlotIndex] = { cardId, reversed };
   closeCardPicker();
   renderDrawCanvas();
