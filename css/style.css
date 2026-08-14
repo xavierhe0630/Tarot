@@ -284,7 +284,7 @@ textarea.notes-area:focus{ outline:none; border-color: var(--gold); }
 }
 .spread-desc{ font-size: 13px; color: var(--ink-dim); margin: 8px 0 14px; }
 .spread-mini-canvas{
-  position:relative; width:100%; aspect-ratio: 4/3;
+  position:relative; width:100%;
   background: radial-gradient(circle at 50% 50%, rgba(201,162,75,.06), transparent 70%), var(--surface);
   border: 1px dashed var(--line);
   border-radius: var(--radius-sm);
@@ -303,6 +303,49 @@ textarea.notes-area:focus{ outline:none; border-color: var(--gold); }
 }
 .pos-dot.filled{ background: var(--gold); color:#221703; font-weight:600; }
 .spread-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.canvas-portrait{ max-width: 440px; margin: 0 auto; }
+
+/* 取牌选择器网格 */
+.picker-search{ margin-bottom: 14px; }
+.picker-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px,1fr));
+  gap: 10px;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: 4px 2px;
+  margin-bottom: 14px;
+}
+.picker-tile{
+  background: var(--bg-soft);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 7px;
+  cursor: pointer;
+  text-align:center;
+  transition: border-color .15s ease, transform .1s ease;
+}
+.picker-tile:hover{ border-color: var(--gold); transform: translateY(-2px); }
+.picker-tile.selected{ border-color: var(--gold); background: var(--surface-2); }
+.picker-tile .thumb{
+  width:100%; aspect-ratio:5/8;
+  border-radius: 5px; overflow:hidden;
+  background: linear-gradient(160deg, var(--surface-2), var(--bg-soft));
+  border: 1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 18px; color: var(--gold-soft);
+  margin-bottom: 5px;
+}
+.picker-tile .thumb img{ width:100%; height:100%; object-fit:cover; }
+.picker-tile .p-name{ font-size: 11px; color: var(--ink); line-height:1.2; }
+.picker-current{
+  display:flex; align-items:center; gap:12px;
+  background: var(--bg-soft); border:1px solid var(--line);
+  border-radius: var(--radius-sm); padding:10px 12px; margin-bottom:14px;
+}
+.picker-current .thumb{ width:44px; aspect-ratio:5/8; border-radius:4px; overflow:hidden; flex-shrink:0;}
+.picker-current .thumb img{ width:100%; height:100%; object-fit:cover; }
 
 /* ---------- 起阵 / 占卜 ---------- */
 .draw-setup{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:22px;}
@@ -329,35 +372,48 @@ select:focus, input:focus{ outline:none; border-color: var(--gold); }
 }
 .draw-canvas{
   position: relative; width: 100%;
-  aspect-ratio: 4/3;
   background-size: cover; background-position:center;
   border-radius: var(--radius-sm);
 }
 .draw-slot{
-  position:absolute; width: 72px;
+  position:absolute; width: clamp(66px, 11vw, 108px);
   transform: translate(-50%,-50%);
   display:flex; flex-direction:column; align-items:center; gap:5px;
   cursor:pointer;
+  z-index: 2;
 }
 .draw-slot .slot-card{
-  width: 60px; aspect-ratio:5/8;
-  border-radius: 6px;
+  position: relative;
+  width: 100%; aspect-ratio:5/8;
+  border-radius: 7px;
   background: linear-gradient(160deg, var(--surface-2), var(--bg-soft));
   border: 1.5px dashed var(--line);
   display:flex; align-items:center; justify-content:center;
-  font-size: 10px; color: var(--ink-faint);
+  font-size: 10.5px; color: var(--ink-faint);
   text-align:center;
+  overflow: hidden;
+  transition: border-color .15s ease, transform .15s ease;
 }
+.draw-slot:hover .slot-card{ border-color: var(--gold); }
 .draw-slot.filled .slot-card{
   border: 1.5px solid var(--gold);
   color: var(--gold-soft);
   background: var(--surface-2);
-  font-size: 11px; padding: 3px; font-weight:600;
+}
+.draw-slot .slot-card img{ width:100%; height:100%; object-fit:cover; }
+.draw-slot .slot-card .slot-card-name{
+  position:absolute; left:0; right:0; bottom:0;
+  background: linear-gradient(to top, rgba(10,7,18,.88), transparent);
+  color: var(--gold-soft);
+  font-size: 10.5px; font-weight:600;
+  padding: 10px 3px 4px;
+  line-height:1.15;
 }
 .draw-slot.reversed .slot-card{ transform: rotate(180deg); }
 .draw-slot .slot-label{
   font-size: 10.5px; color: var(--ink-dim); text-align:center;
   background: rgba(21,17,31,.7); padding:1px 6px; border-radius:4px;
+  max-width: 120px;
 }
 
 .reading-result{ margin-top: 8px; }
@@ -388,7 +444,7 @@ select:focus, input:focus{ outline:none; border-color: var(--gold); }
 /* ---------- 牌阵编辑器 ---------- */
 .editor-canvas{
   position: relative;
-  width:100%; aspect-ratio: 4/3;
+  width:100%;
   background: var(--bg-soft);
   border: 1px dashed var(--line);
   border-radius: var(--radius-sm);
