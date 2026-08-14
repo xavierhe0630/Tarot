@@ -363,7 +363,7 @@ function renderDrawCanvas(){
     const slot = draw.slots[i];
     const card = slot.cardId ? CARDS.find(c=>c.id===slot.cardId) : null;
     const cardVisual = card
-      ? `<div class="card-face">${cardThumbContent(card)}</div><div class="slot-card-name">${card.name_cn}</div>`
+      ? `<div class="card-face">${cardThumbContent(card)}</div><div class="slot-card-name">${card.name_cn}${slot.reversed?'<span class="reversed-tag">（逆位）</span>':''}</div>`
       : (i+1);
     return `
       <div class="draw-slot ${card?'filled':''} ${slot.reversed?'reversed':''}" style="left:${p.x}%; top:${p.y}%;" onclick="openCardPicker(${i})">
