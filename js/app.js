@@ -317,8 +317,11 @@ function renderDrawSetup(){
   const sel = document.getElementById("draw-spread-select");
   const spreads = allSpreads();
   sel.innerHTML = spreads.map(s=>`<option value="${s.id}">${s.name} · ${s.category}（${s.positions.length}张）</option>`).join("");
-  document.getElementById("draw-canvas-area").innerHTML = "";
-  document.getElementById("draw-result-area").innerHTML = "";
+  const defaultId = "spread-career-triangle";
+  if(spreads.some(s=>s.id===defaultId)){
+    sel.value = defaultId;
+  }
+  beginDraw();
 }
 
 function beginDraw(){
