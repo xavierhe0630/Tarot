@@ -284,7 +284,7 @@ textarea.notes-area:focus{ outline:none; border-color: var(--gold); }
 }
 .spread-desc{ font-size: 13px; color: var(--ink-dim); margin: 8px 0 14px; }
 .spread-mini-canvas{
-  position:relative; width:100%;
+  position:relative; width:100%; aspect-ratio: 4/3;
   background: radial-gradient(circle at 50% 50%, rgba(201,162,75,.06), transparent 70%), var(--surface);
   border: 1px dashed var(--line);
   border-radius: var(--radius-sm);
@@ -374,9 +374,10 @@ select:focus, input:focus{ outline:none; border-color: var(--gold); }
   position: relative; width: 100%;
   background-size: cover; background-position:center;
   border-radius: var(--radius-sm);
+  margin: 58px 0;
 }
 .draw-slot{
-  position:absolute; width: clamp(66px, 11vw, 108px);
+  position:absolute; width: clamp(52px, 7.5vw, 78px);
   transform: translate(-50%,-50%);
   display:flex; flex-direction:column; align-items:center; gap:5px;
   cursor:pointer;
