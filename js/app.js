@@ -151,17 +151,14 @@ function renderSpreadsLibrary(){
   grid.innerHTML = spreads.map(s=>{
     const isCustom = !!DEFAULT_SPREADS.find(d=>d.id===s.id) ? false : true;
     const bg = Store.getSpreadImage(s.id);
-    const aspect = s.aspect || "4/3";
-    const [aw, ah] = aspect.split("/").map(Number);
-    const portraitClass = ah > aw ? " canvas-portrait" : "";
     return `
     <div class="spread-card">
       <div class="spread-card-top">
         <div><h3 style="margin-bottom:2px;">${s.name}</h3></div>
         <span class="spread-cat-tag">${s.category}</span>
       </div>
-      <div class="spread-desc">${s.description||""} · 共 ${s.positions.length} 张牌</div>
-      <div class="spread-mini-canvas${portraitClass}" style="aspect-ratio:${aspect}; ${bg?`background-image:url(${bg}); background-size:cover; background-position:center;`:""}">
+      <div class="spread-desc">${s.description||""}</div>
+      <div class="spread-mini-canvas" style="${bg?`background-image:url(${bg}); background-size:cover; background-position:center;`:""}">
         ${s.positions.map((p,i)=>`<div class="pos-dot" style="left:${p.x}%; top:${p.y}%;">${i+1}</div>`).join("")}
       </div>
       <div class="spread-actions">
