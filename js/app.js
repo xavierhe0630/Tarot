@@ -26,6 +26,7 @@ function showView(viewId){
   if(viewId==="spreads") renderSpreadsLibrary();
   if(viewId==="draw") renderDrawSetup();
   if(viewId==="history") renderHistory();
+  try{ localStorage.setItem("tarot_current_view_v1", viewId); }catch(e){}
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -581,4 +582,9 @@ window.addEventListener("DOMContentLoaded", ()=>{
   initTabs();
   initDeckFilters();
   renderDeck();
+  let savedView = null;
+  try{ savedView = localStorage.getItem("tarot_current_view_v1"); }catch(e){}
+  if(savedView && document.getElementById("view-"+savedView)){
+    showView(savedView);
+  }
 });
