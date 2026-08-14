@@ -372,10 +372,12 @@ select:focus, input:focus{ outline:none; border-color: var(--gold); }
 }
 .draw-canvas{
   position: relative; width: 100%;
+  max-width: 620px;
+  margin: 58px auto;
   background-size: cover; background-position:center;
   border-radius: var(--radius-sm);
-  margin: 58px 0;
 }
+.draw-canvas.canvas-portrait{ max-width: 420px; }
 .draw-slot{
   position:absolute; width: clamp(52px, 7.5vw, 78px);
   transform: translate(-50%,-50%);
